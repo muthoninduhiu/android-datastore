@@ -19,6 +19,7 @@ package com.codelab.android.datastore.ui
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.SharedPreferencesMigration
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -34,7 +35,12 @@ class TasksActivity : AppCompatActivity() {
     private val adapter = TasksAdapter()
 
     private val Context.dataStore by preferencesDataStore(
-        name = USER_PREFERENCES_NAME
+        name = USER_PREFERENCES_NAME,
+
+        produceMigrations = { context ->
+            listOf(SharedPreferencesMigration(context, USER_PREFERENCES_NAME))
+
+        }
     )
 
     private lateinit var viewModel: TasksViewModel

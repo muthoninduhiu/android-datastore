@@ -121,7 +121,8 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
         }
     }*/
     data class UserPreferences(val showCompleted: Boolean,
-                               val sortOrder: SortOrder)
+                               val sortOrder: SortOrder
+                               )
     private object PreferencesKeys {
         val SHOW_COMPLETED = booleanPreferencesKey("show_completed")
     }
