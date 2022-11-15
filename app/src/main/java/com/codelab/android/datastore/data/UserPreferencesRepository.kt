@@ -114,4 +114,5 @@ class UserPreferencesRepository private constructor(context: Context) {
             }
         }
     }
+    data class UserPreferences(val showCompleted: Boolean)
 }
