@@ -19,8 +19,11 @@ package com.codelab.android.datastore.data
 import android.content.Context
 import androidx.core.content.edit
 import androidx.datastore.core.DataStore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.datastore.core.IOException
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.emptyPreferences
+import kotlinx.coroutines.flow.*
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
 private const val SORT_ORDER_KEY = "sort_order"
@@ -100,7 +103,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
         }
     }
 
-    companion object {
+    /*companion object {
         @Volatile
         private var INSTANCE: UserPreferencesRepository? = null
 
@@ -115,7 +118,22 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
                 instance
             }
         }
+    }*/
+    data class UserPreferences(val showCompleted: Boolean)
+    private object PreferencesKeys {
+        val SHOW_COMPLETED = booleanPreferencesKey("show_completed")
     }
-    data class UserPreferences(val showCompleted: Boolean,
-                               val sortOrder: SortOrder)
+    val userPreferenceFlow: Flow<UserPreferences> = dataStore.data
+        .catch { exception ->
+            if(exception is IOException){
+                emit(emptyPreferences())
+            }else{
+                throw exception
+            }
+        }.map { preferences ->
+            val showCompleted = preferences[PreferencesKeys.SHOW_COMPLETED]?: false
+            UserPreferences(showCompleted)
+        }
+
+
 }
