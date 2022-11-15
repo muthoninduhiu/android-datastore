@@ -20,10 +20,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.*
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
@@ -125,6 +122,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
                                )
     private object PreferencesKeys {
         val SHOW_COMPLETED = booleanPreferencesKey("show_completed")
+        val SORT_ORDER = stringPreferencesKey("sort_order")
     }
     val userPreferenceFlow: Flow<UserPreferences> = dataStore.data
         .catch { exception ->
@@ -135,7 +133,7 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
             }
         }.map { preferences ->
             val showCompleted = preferences[PreferencesKeys.SHOW_COMPLETED]?: false
-            UserPreferences(showCompleted)
+            UserPreferences(showCompleted,sortOrder)
         }
     suspend fun updateShowCompleted(showCompleted: Boolean){
         dataStore.edit {
