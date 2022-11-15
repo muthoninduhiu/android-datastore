@@ -132,6 +132,9 @@ class UserPreferencesRepository(private val dataStore: DataStore<androidx.datast
                 throw exception
             }
         }.map { preferences ->
+            val sortOrder = SortOrder.valueOf(
+                (preferences[PreferencesKeys.SORT_ORDER]?: SortOrder.NONE.name)
+            )
             val showCompleted = preferences[PreferencesKeys.SHOW_COMPLETED]?: false
             UserPreferences(showCompleted,sortOrder)
         }
